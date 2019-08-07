@@ -32,9 +32,12 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             }
         },
         _findEdge(map) {
-            return L.bounds([0,0], map.getSize())
+            return map && L.bounds([0,0], map.getSize())
         },
         _getBearingToPoint() {
+            if (!this._map) {
+              return;
+            }
             const lat1 = deg2rad(this._map.getCenter()['lat']);
             const lat2 = deg2rad(this.options.lat);
             const dLon = deg2rad(this._map.getCenter()['lng'] - this.options.lng);
@@ -46,6 +49,9 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             return brng;
         },
         _getPointOutsideViewport() {
+            if (!this._map) {
+              return;
+            }
             const mapPixelBounds = this._findEdge(this._map);
             const currentMarkerPosition = this._map.latLngToContainerPoint([this.options.lat, this.options.lng]);
 
@@ -129,6 +135,9 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             this._removeEdgeMarker();
         },
         _addEdgeMarker() {
+            if (!this._map) {
+              return;
+            }
             this._removeEdgeMarker();
             const position = this._getPointOutsideViewport();
 
