@@ -20,6 +20,7 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
         options: {
             heightOffset: 29,
             widthOffset: 29,
+            rotationOffset: -180,
             style: {
                 rotationAngle: 0,
                 fillOpacity: 1,
@@ -147,8 +148,9 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
 
             const latLon = this._map.containerPointToLatLng(position);
             this.options.style.rotationAngle = this._getBearingToPoint();
+            this.options.style.rotationAngle -= this.options.rotationOffset;
 
-            this._edgeMarker = L.circleMarker(latLon, this.options.style);
+            this._edgeMarker = L.marker(latLon, this.options.style);
             this._map.addLayer(this._edgeMarker);
         },
     });
