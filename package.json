@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "leaflet": "^1.5.1",
+    "leaflet-rotatedmarker": "^0.2.0"
+  },
+  "name": "leaflet-edge-marker",
+  "version": "1.0.0",
+  "main": "leaflet.edgemarker.js",
+  "devDependencies": {},
+  "author": "Michal Zimmermann <https://github.com/zimmicz>",
+  "license": "ISC",
+  "description": ""
+}
