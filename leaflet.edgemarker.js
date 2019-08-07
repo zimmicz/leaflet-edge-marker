@@ -16,14 +16,15 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
     }
 })(function (L) {
     L.EdgeMarker = L.Layer.extend({
+        _edgeMarker: null,
         options: {
-            circleMarker: {
-                heightOffset: 29,
-                widthOffset: 29,
+            heightOffset: 29,
+            widthOffset: 29,
+            style: {
                 rotationAngle: 0,
                 fillOpacity: 1,
                 stroke: false,
-            }
+            },
         },
         _removeEdgeMarker() {
             if (this._map && this._edgeMarker) {
@@ -58,8 +59,8 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
 
             let {x,y} = currentMarkerPosition;
             const center = mapPixelBounds.getCenter();
-            const markerWidth = this.options.circleMarker.widthOffset;
-            const markerHeight = this.options.circleMarker.heightOffset;
+            const markerWidth = this.options.widthOffset;
+            const markerHeight = this.options.heightOffset;
             let markerDistance;
 
             const rad = Math.atan2(center.y - y, center.x - x);
@@ -124,21 +125,21 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             map.on('viewreset', this._addEdgeMarker, this);
             this._addEdgeMarker();
         },
-        onRemove(map) {
+        onRemove() {
             this._removeEdgeMarker();
         },
         _addEdgeMarker() {
-            const position = this._getPointOutsideViewport();
             this._removeEdgeMarker();
+            const position = this._getPointOutsideViewport();
 
             if (!position) {
                 return;
             }
 
             const latLon = this._map.containerPointToLatLng(position);
-            this.options.circleMarker.rotationAngle = this._getBearingToPoint();
+            this.options.style.rotationAngle = this._getBearingToPoint();
 
-            this._edgeMarker = L.circleMarker(latLon, this.options.circleMarker);
+            this._edgeMarker = L.circleMarker(latLon, this.options.style);
             this._map.addLayer(this._edgeMarker);
         },
     });
