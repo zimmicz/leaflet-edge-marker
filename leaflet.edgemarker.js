@@ -1,7 +1,20 @@
 const deg2rad = (deg) => deg * Math.PI / 180;
 const rad2deg = (rad) => rad * 180 / Math.PI;
 
-(function(L) {
+(function (factory) {
+    if(typeof define === 'function' && define.amd) {
+    //AMD
+        define(['leaflet'], factory);
+    } else if(typeof module !== 'undefined') {
+    // Node/CommonJS
+        module.exports = factory(require('leaflet'));
+    } else {
+    // Browser globals
+        if(typeof window.L === 'undefined')
+            throw 'Leaflet must be loaded first';
+        factory(window.L);
+    }
+})(function (L) {
     L.EdgeMarker = L.Layer.extend({
         options: {
             circleMarker: {
@@ -130,7 +143,9 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
         },
     });
 
-    L.edgeMarker = function(options) {
-        return new L.EdgeMarker(options);
-    };
-})(L);
+L.edgeMarker = function(options) {
+    return new L.EdgeMarker(options);
+};
+
+return L.EdgeMarker;
+});
