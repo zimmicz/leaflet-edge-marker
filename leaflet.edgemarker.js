@@ -18,6 +18,16 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
     L.EdgeMarker = L.Marker.extend({
         _edgeMarker: null,
         options: {
+            icon: L.icon({
+                iconUrl: '../img/map-marker.svg',
+                iconRetinaUrl: 'marker-icon-2x.png',
+                shadowUrl:     'marker-shadow.png',
+                iconSize:    [25, 41],
+                iconAnchor:  [12, 41],
+                popupAnchor: [1, -34],
+                tooltipAnchor: [16, -28],
+                shadowSize:  [0, 0],
+            }),
             heightOffset: 29,
             widthOffset: 29,
             rotationOffset: -180,
