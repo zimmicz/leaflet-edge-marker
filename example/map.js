@@ -10,5 +10,6 @@ var myIcon = L.icon({
     tooltipAnchor: [16, -28],
     shadowSize:  [0, 0],
 });
-var marker = L.edgeMarker([50,5], { icon: myIcon, }).addTo(mymap);
+console.log(L.edgeMarker);
+var marker = L.edgeMarker([50,5], { icon: myIcon }).addTo(mymap);
 var marker2 = L.marker({lat: 50, lng: 5}).addTo(mymap);

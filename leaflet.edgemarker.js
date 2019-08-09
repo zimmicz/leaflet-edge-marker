@@ -15,7 +15,7 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
         factory(window.L);
     }
 })(function (L) {
-    L.EdgeMarker = L.Layer.extend({
+    L.EdgeMarker = L.Marker.extend({
         _edgeMarker: null,
         options: {
             heightOffset: 29,
@@ -23,21 +23,10 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             rotationOffset: -180,
             rotationAngle: 0,
         },
-        _getLat() {
-            const lat = this.options['0'] || this.options['lat'];
-            if (typeof lat === 'undefined' || lat === null) {
-                throw Error('lat is null');
-            }
-
-            return lat;
-        },
-        _getLng() {
-            const lng = this.options['1'] || this.options['lng'];
-            if (typeof lng === 'undefined' || lng === null) {
-                throw Error('lng is null');
-            }
-
-            return lng;
+        initialize(latLng, options) {
+            L.Util.setOptions(this, options);
+            L.Icon.Default.prototype.options.shadowSize = [0,0];
+            this._latLng = L.latLng(latLng);
         },
         _removeEdgeMarker() {
             if (this._map && this._edgeMarker) {
@@ -52,8 +41,8 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
               return;
             }
             const lat1 = deg2rad(this._map.getCenter()['lat']);
-            const lat2 = deg2rad(this._getLat());
-            const dLon = deg2rad(this._map.getCenter()['lng'] - this._getLng());
+            const lat2 = deg2rad(this._latLng.lat);
+            const dLon = deg2rad(this._map.getCenter()['lng'] - this._latLng.lng);
             const y = Math.sin(dLon) * Math.cos(lat2);
             const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
             let brng = Math.atan2(y, x);
@@ -66,7 +55,7 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
               return;
             }
             const mapPixelBounds = this._findEdge(this._map);
-            const currentMarkerPosition = this._map.latLngToContainerPoint([this._getLat(), this._getLng()]);
+            const currentMarkerPosition = this._map.latLngToContainerPoint([this._latLng.lat, this._latLng.lng]);
 
             if (!(currentMarkerPosition.y < mapPixelBounds.min.y ||
                 currentMarkerPosition.y > mapPixelBounds.max.y ||
@@ -133,11 +122,6 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
 
             return {x,y};
         },
-        initialize(options) {
-            const _options = L.Util.extend(this.options, options);
-            L.Util.setOptions(this, _options);
-            L.Icon.Default.prototype.options.shadowSize = [0,0];
-        },
         onAdd(map) {
             this._map = map;
             map.on('move', this._addEdgeMarker, this);
@@ -167,8 +151,8 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
         },
     });
 
-L.edgeMarker = function(options) {
-    return new L.EdgeMarker(options);
+L.edgeMarker = function(latLng, options) {
+    return new L.EdgeMarker(latLng, options);
 };
 
 return L.EdgeMarker;
