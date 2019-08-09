@@ -21,11 +21,23 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             heightOffset: 29,
             widthOffset: 29,
             rotationOffset: -180,
-            style: {
-                rotationAngle: 0,
-                fillOpacity: 1,
-                stroke: false,
-            },
+            rotationAngle: 0,
+        },
+        _getLat() {
+            const lat = this.options['0'] || this.options['lat'];
+            if (typeof lat === 'undefined' || lat === null) {
+                throw Error('lat is null');
+            }
+
+            return lat;
+        },
+        _getLng() {
+            const lng = this.options['1'] || this.options['lng'];
+            if (typeof lng === 'undefined' || lng === null) {
+                throw Error('lng is null');
+            }
+
+            return lng;
         },
         _removeEdgeMarker() {
             if (this._map && this._edgeMarker) {
@@ -40,8 +52,8 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
               return;
             }
             const lat1 = deg2rad(this._map.getCenter()['lat']);
-            const lat2 = deg2rad(this.options.lat);
-            const dLon = deg2rad(this._map.getCenter()['lng'] - this.options.lng);
+            const lat2 = deg2rad(this._getLat());
+            const dLon = deg2rad(this._map.getCenter()['lng'] - this._getLng());
             const y = Math.sin(dLon) * Math.cos(lat2);
             const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
             let brng = Math.atan2(y, x);
@@ -54,7 +66,7 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
               return;
             }
             const mapPixelBounds = this._findEdge(this._map);
-            const currentMarkerPosition = this._map.latLngToContainerPoint([this.options.lat, this.options.lng]);
+            const currentMarkerPosition = this._map.latLngToContainerPoint([this._getLat(), this._getLng()]);
 
             if (!(currentMarkerPosition.y < mapPixelBounds.min.y ||
                 currentMarkerPosition.y > mapPixelBounds.max.y ||
@@ -147,10 +159,10 @@ const rad2deg = (rad) => rad * 180 / Math.PI;
             }
 
             const latLon = this._map.containerPointToLatLng(position);
-            this.options.style.rotationAngle = this._getBearingToPoint();
-            this.options.style.rotationAngle -= this.options.rotationOffset;
+            this.options.rotationAngle = this._getBearingToPoint();
+            this.options.rotationAngle -= this.options.rotationOffset;
 
-            this._edgeMarker = L.marker(latLon, this.options.style);
+            this._edgeMarker = L.marker(latLon, this.options);
             this._map.addLayer(this._edgeMarker);
         },
     });
